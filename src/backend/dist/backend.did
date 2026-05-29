@@ -1,0 +1,192 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserStatus = 
+ variant {
+   active;
+   inactive;
+ };
+type UserRole__1 = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserRole = 
+ variant {
+   admin;
+   employee;
+   employer;
+ };
+type UserId = principal;
+type User = 
+ record {
+   createdAt: Timestamp;
+   email: text;
+   name: text;
+   "principal": UserId;
+   role: UserRole;
+   status: UserStatus;
+ };
+type Timestamp = int;
+type PlatformStats = 
+ record {
+   activeJobs: nat;
+   totalApplications: nat;
+   totalEmployees: nat;
+   totalEmployers: nat;
+   totalJobs: nat;
+   totalUsers: nat;
+ };
+type JobType = 
+ variant {
+   contract;
+   fullTime;
+   partTime;
+ };
+type JobStatus = 
+ variant {
+   active;
+   closed;
+   draft;
+ };
+type JobSearchFilter = 
+ record {
+   jobType: opt JobType;
+   keyword: opt text;
+   location: opt text;
+   salaryMax: opt nat;
+   salaryMin: opt nat;
+ };
+type JobListing = 
+ record {
+   applicationDeadline: Timestamp;
+   createdAt: Timestamp;
+   description: text;
+   employerId: UserId;
+   experienceRequired: nat;
+   jobId: JobId;
+   jobType: JobType;
+   location: text;
+   salaryMax: nat;
+   salaryMin: nat;
+   skillsRequired: vec text;
+   status: JobStatus;
+   title: text;
+   updatedAt: Timestamp;
+ };
+type JobId = nat;
+type JobApplication = 
+ record {
+   applicationId: ApplicationId;
+   appliedAt: Timestamp;
+   employeeId: UserId;
+   jobId: JobId;
+   notes: opt text;
+   status: ApplicationStatus;
+   updatedAt: Timestamp;
+ };
+type ExternalBlob = blob;
+type ExperienceEntry = 
+ record {
+   company: text;
+   description: text;
+   endDate: opt text;
+   startDate: text;
+   title: text;
+ };
+type EmployerStatus = 
+ variant {
+   approved;
+   pending;
+   suspended;
+ };
+type EmployerProfile = 
+ record {
+   companyEmail: text;
+   companyName: text;
+   companySize: text;
+   description: text;
+   industry: text;
+   status: EmployerStatus;
+   userId: UserId;
+ };
+type EmployeeProfile = 
+ record {
+   experience: vec ExperienceEntry;
+   location: text;
+   phone: text;
+   professionalSummary: text;
+   resumeFileId: opt ExternalBlob;
+   skills: vec text;
+   userId: UserId;
+ };
+type ApplicationStatus = 
+ variant {
+   applied;
+   interview;
+   offer;
+   rejected;
+   shortlisted;
+ };
+type ApplicationId = nat;
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  applyToJob: (jobId: JobId) -> (ApplicationId);
+  approveEmployer: (userId: UserId) -> ();
+  approveJob: (jobId: JobId) -> ();
+  assignCallerUserRole: (user: principal, role: UserRole__1) -> ();
+  deactivateUser: (userId: UserId) -> ();
+  getCallerUserRole: () -> (UserRole__1) query;
+  getEmployeeProfile: (userId: UserId) -> (opt EmployeeProfile) query;
+  getEmployerProfile: (userId: UserId) -> (opt EmployerProfile) query;
+  getJobApplications: (jobId: JobId) -> (vec JobApplication) query;
+  getJobDetails: (jobId: JobId) -> (opt JobListing) query;
+  getMyApplications: () -> (vec JobApplication) query;
+  getMyEmployerJobs: () -> (vec JobListing) query;
+  getMyProfile: () -> (opt User) query;
+  getPlatformStats: () -> (PlatformStats) query;
+  getSavedJobs: () -> (vec JobListing) query;
+  getUserList: () -> (vec User) query;
+  isCallerAdmin: () -> (bool) query;
+  postJob: (title: text, description: text, location: text, salaryMin: 
+   nat, salaryMax: nat, experienceRequired: nat, jobType: JobType,
+   skillsRequired: vec text, applicationDeadline: Timestamp) -> (JobId);
+  reactivateUser: (userId: UserId) -> ();
+  registerUser: (role: UserRole, name: text, email: text) -> ();
+  rejectJob: (jobId: JobId) -> ();
+  saveJob: (jobId: JobId) -> ();
+  searchJobs: (filter: JobSearchFilter) -> (vec JobListing) query;
+  suspendEmployer: (userId: UserId) -> ();
+  unsaveJob: (jobId: JobId) -> ();
+  updateApplicationStatus: (applicationId: ApplicationId, status:
+   ApplicationStatus, notes: opt text) -> ();
+  updateEmployeeProfile: (location: text, phone: text, skills: vec text,
+   professionalSummary: text, experience: vec ExperienceEntry, resumeFileId:
+   opt ExternalBlob) -> ();
+  updateEmployerProfile: (companyName: text, companyEmail: text, companySize:
+   text, industry: text, description: text) -> ();
+  updateJob: (jobId: JobId, title: text, description: text, location: 
+   text, salaryMin: nat, salaryMax: nat, experienceRequired: nat, jobType:
+   JobType, skillsRequired: vec text, status: JobStatus, applicationDeadline:
+   Timestamp) -> ();
+}

@@ -1,0 +1,24 @@
+{
+  "overview": "ProHire 365 is a full-featured job portal with three distinct roles: Employee portal for job search and applications, Employer portal for posting jobs and managing candidates, and Admin console for platform management and analytics.",
+  "features": [
+    "Job search with keyword, location, and salary filters",
+    "Employee profile with resume upload and skills management",
+    "Employer job posting with rich text editor",
+    "Application tracking with status workflow",
+    "Admin console with user management and platform analytics",
+    "Role-based access control with Internet Identity authentication",
+    "Light and dark mode support",
+    "Candidate search for employers",
+    "Saved jobs list for employees",
+    "Platform analytics dashboard"
+  ],
+  "category": "productivity",
+  "tags": [
+    "job-portal",
+    "recruitment",
+    "hiring",
+    "employment",
+    "careers"
+  ],
+  "last_updated": "2026-04-22T14:47:00.406Z"
+}

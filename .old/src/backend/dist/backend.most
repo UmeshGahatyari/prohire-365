@@ -1,0 +1,142 @@
+// Version: 1.0.0
+type ApplicationId__702901380 = Nat;
+type ApplicationStatus__314470409 =
+  {#applied; #interview; #offer; #rejected; #shortlisted};
+type Data__159895909<T> = {var count : Nat__490723111; elements : [var ?T]};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type EmployeeProfile__1011456544 =
+  {
+    experience : [ExperienceEntry__752605542];
+    location : Text;
+    phone : Text;
+    professionalSummary : Text;
+    resumeFileId : ?ExternalBlob__671167343;
+    skills : [Text];
+    userId : UserId__158757552
+  };
+type EmployerProfile__134796480 =
+  {
+    companyEmail : Text;
+    companyName : Text;
+    companySize : Text;
+    description : Text;
+    industry : Text;
+    status : EmployerStatus__878349090;
+    userId : UserId__158757552
+  };
+type EmployerStatus__878349090 = {#approved; #pending; #suspended};
+type ExperienceEntry__752605542 =
+  {
+    company : Text;
+    description : Text;
+    endDate : ?Text;
+    startDate : Text;
+    title : Text
+  };
+type ExternalBlob__671167343 = Blob;
+type Internal__667636161<T> =
+  {children : [var ?Node__92254746<T>]; data : Data__159895909<T>};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type JobApplication__941079936 =
+  {
+    applicationId : ApplicationId__702901380;
+    appliedAt : Timestamp__301639476;
+    employeeId : UserId__158757552;
+    jobId : JobId__339598917;
+    notes : ?Text;
+    status : ApplicationStatus__314470409;
+    updatedAt : Timestamp__301639476
+  };
+type JobId__339598917 = Nat;
+type JobListing__179343868 =
+  {
+    applicationDeadline : Timestamp__301639476;
+    createdAt : Timestamp__301639476;
+    description : Text;
+    employerId : UserId__158757552;
+    experienceRequired : Nat;
+    jobId : JobId__339598917;
+    jobType : JobType__229172236;
+    location : Text;
+    salaryMax : Nat;
+    salaryMin : Nat;
+    skillsRequired : [Text];
+    status : JobStatus__374926235;
+    title : Text;
+    updatedAt : Timestamp__301639476
+  };
+type JobStatus__374926235 = {#active; #closed; #draft};
+type JobType__229172236 = {#contract; #fullTime; #partTime};
+type Leaf__520550824<T> = {data : Data__159895909<T>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type Node__92254746<T> =
+  {#internal : Internal__667636161<T>; #leaf : Leaf__520550824<T>};
+type Set__532252804<T> = Set__710576254<T>;
+type Set__710576254<T> =
+  {var root : Node__92254746<T>; var size : Nat__490723111};
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserRole__1073662873 = {#admin; #guest; #user};
+type UserRole__451090586 = {#admin; #employee; #employer};
+type UserStatus__418351110 = {#active; #inactive};
+type User__98118558 =
+  {
+    createdAt : Timestamp__301639476;
+    email : Text;
+    name : Text;
+    principal : UserId__158757552;
+    role : UserRole__451090586;
+    status : UserStatus__418351110
+  };
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable applications :
+    {
+      var root :
+        Node__46230540<ApplicationId__702901380, JobApplication__941079936>;
+      var size : Nat__490723111
+    };
+  stable employeeProfiles :
+    {
+      var root :
+        Node__46230540<UserId__158757552, EmployeeProfile__1011456544>;
+      var size : Nat__490723111
+    };
+  stable employerProfiles :
+    {
+      var root : Node__46230540<UserId__158757552, EmployerProfile__134796480>;
+      var size : Nat__490723111
+    };
+  stable jobs :
+    {
+      var root : Node__46230540<JobId__339598917, JobListing__179343868>;
+      var size : Nat__490723111
+    };
+  stable var nextApplicationId : Nat;
+  stable var nextJobId : Nat;
+  stable savedJobs :
+    {
+      var root :
+        Node__46230540<UserId__158757552, Set__532252804<JobId__339598917>>;
+      var size : Nat__490723111
+    };
+  stable users :
+    {
+      var root : Node__46230540<UserId__158757552, User__98118558>;
+      var size : Nat__490723111
+    }
+};
